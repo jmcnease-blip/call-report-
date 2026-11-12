@@ -600,7 +600,7 @@ function copyText(weeks){
 function makePdf(weeks,name){
   if(!window.jspdf){toast('PDF tool still loading — try again');return}
   var doc=new window.jspdf.jsPDF({orientation:'landscape',unit:'pt',format:'letter'});
-  var X=[18,68,166,246,354,432,774],TOP=116,RH=20,NR=22,FS=12,first=true;
+  var X=[18,68,166,246,354,432,774],TOP=116,RH=17,NR=26,FS=10,first=true;
   doc.setFont('helvetica','normal');
   weeks.forEach(function(we){
   doc.setFontSize(FS);
@@ -617,7 +617,7 @@ function makePdf(weeks,name){
     for(var r=0;r<=NR+1;r++)doc.line(X[0],TOP+RH*r,X[6],TOP+RH*r);
     X.forEach(function(x){doc.line(x,TOP,x,bot)});
     doc.setFontSize(10);['DATE','ACCOUNT','LOCATION','CUSTOMER','TITLE','PRODUCT PROMOTED OR CALL SUMMARY'].forEach(function(h,i){doc.text(h,(X[i]+X[i+1])/2,TOP+13,{align:'center'})});
-    doc.setFontSize(FS);pg.forEach(function(rw,i){if(!rw)return;var y=TOP+RH*(i+1)+14.5;[rw.d,rw.a,rw.l,rw.c,rw.t,rw.s].forEach(function(v,k){if(v)doc.text(doc.splitTextToSize(String(v),X[k+1]-X[k]-4)[0],X[k]+2,y)})});
+    doc.setFontSize(FS);pg.forEach(function(rw,i){if(!rw)return;var y=TOP+RH*(i+1)+12.5;[rw.d,rw.a,rw.l,rw.c,rw.t,rw.s].forEach(function(v,k){if(v)doc.text(doc.splitTextToSize(String(v),X[k+1]-X[k]-4)[0],X[k]+2,y)})});
   });
   });
   if(first){toast('No calls in that period');return}
