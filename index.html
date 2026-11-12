@@ -500,9 +500,9 @@ function weekCalls(we){return DATA.calls.filter(function(c){return weekEnd(c.dat
 
 function render(){
   try{sessionStorage.setItem('cr_week',cur)}catch(e){}
-  $('nm').textContent=DATA.name;$('wkl').innerHTML='Week ending '+short(cur)+'<div style="font-size:12px;font-weight:400;opacity:.8">'+monthName(monthOf(cur))+' report</div>';status();
+  $('nm').textContent=(DATA.name||'Tap to set your name')+' ✎';$('wkl').innerHTML='Week ending '+short(cur)+'<div style="font-size:12px;font-weight:400;opacity:.8">'+monthName(monthOf(cur))+' report</div>';status();
   var cs=weekCalls(cur),h='',lastD='';
-  if(!cs.length)h=(DATA.calls.length?'':'<div class="empty" style="padding-bottom:0">First time? Tap <b>Report → Restore from backup</b> and pick your <b>Call Report data</b> file.</div>')+'<div class="empty">No calls this week yet.<br>Tap <b>+ Add call</b> to start.</div>';
+  if(!cs.length)h=(DATA.calls.length?'':'<div class="empty" style="padding-bottom:0">New here? Tap <b>+ Add call</b> to log your first call.<br>Moving from another phone? Use <b>Report → Restore from backup</b>.</div>')+'<div class="empty">No calls this week yet.<br>Tap <b>+ Add call</b> to start.</div>';
   cs.forEach(function(c){
     if(c.date!==lastD){lastD=c.date;h+='<div class="day">'+DAYS[parse(c.date).getDay()]+' '+short(c.date)+'</div>'}
     var who=(c.contacts||[]).filter(function(p){return p.name}).map(function(p){return esc(p.name)+(p.title?' <span style="color:#888">('+esc(p.title)+')</span>':'')}).join(', ');
@@ -647,7 +647,20 @@ $('rep').onclick=function(){
   $('sh').className='sheet on';
 };
 
+function openName(first){
+  var pn=$('pn');
+  pn.innerHTML='<h2>'+(first?'Welcome':'Your name')+(first?'':'<button class="x" id="cl">Cancel</button>')+'</h2>'+
+   (first?'<p style="color:#555;margin:0 0 6px">This is your own call report. Everything you enter is saved only on this phone — nobody else using this link can see or change it.</p>':'')+
+   '<label>Name (prints at the top of your report)</label><input id="fN" autocomplete="name" placeholder="First Last">'+
+   '<button class="save pri" id="svN">Save</button>';
+  $('fN').value=DATA.name||'';
+  if(!first)$('cl').onclick=close;
+  $('svN').onclick=function(){var v=$('fN').value.trim();if(!v){toast('Enter your name');return}DATA.name=v;close();render();stash()};
+  $('sh').className='sheet on';
+}
+$('nm').style.cursor='pointer';$('nm').onclick=function(){openName(false)};
 render();
+if(!DATA.name)openName(true);
 })();
 </script>
 </body></html>
